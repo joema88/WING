@@ -178,6 +178,27 @@ public class DB {
 		return exist;
 	}
 
+	
+	public static boolean checkBBRecordExist(int stockID, int dateID) {
+		boolean exist = true;
+		getStatement();
+		try {
+			String query = " SELECT COUNT(*) FROM BBROCK WHERE STOCKID = " + stockID + " and DATEID = "+dateID;
+
+			ResultSet rs = stmnt.executeQuery(query);
+
+			if (rs.next()&&rs.getInt(1) == 0) {
+				exist = false;
+			}
+			;
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace(System.out);
+		}
+
+		return exist;
+	}
+	
 	public static PreparedStatement getDateInsertStatement() {
 		getConnection();
 
