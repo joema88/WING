@@ -208,9 +208,7 @@ public class CSVReader {
 			boolean start = false;
 			br = new BufferedReader(new FileReader(csvFile));
 			while ((line = br.readLine()) != null) {
-				if (line.indexOf("Last") > 0) {
-					start = true;
-				}
+
 				// use comma as separator
 				if (start) {
 					String[] data = line.split(cvsSplitBy);
@@ -226,16 +224,15 @@ public class CSVReader {
 						String fieldName = "TEAL";
 						if (fileName.toLowerCase().indexOf("struggle") >= 0) {
 							fieldName = "YELLOW";
-						} else if (fileName.toLowerCase().indexOf("up") >=0) {
+						} else if (fileName.toLowerCase().indexOf("up") >= 0) {
 							fieldName = "TEAL";
-						} else if (fileName.toLowerCase().indexOf("down") >=0) {
+						} else if (fileName.toLowerCase().indexOf("down") >= 0) {
 							fieldName = "PINK";
-						} 
-						
-						if (fileName.toLowerCase().indexOf("base")< 0) {
-							updateBBRecord(stockID,currentDateID,fieldName,1);
-						} 
-						
+						}
+
+						if (fileName.toLowerCase().indexOf("base") < 0) {
+							updateBBRecord(stockID, currentDateID, fieldName, 1);
+						}
 
 					} else {
 						float percentage = 0.0f;
@@ -260,7 +257,8 @@ public class CSVReader {
 						}
 						float atr = 0.0f;
 						try {
-							atr = Float.parseFloat(data[4].strip());
+							if (!data[4].strip().equalsIgnoreCase("NaN"))
+								atr = Float.parseFloat(data[4].strip());
 						} catch (Exception ex) {
 
 						}
@@ -313,19 +311,21 @@ public class CSVReader {
 								String val = line.substring(line.indexOf(" M") + 5, line.length() - 1);
 								// System.out.println("vale "+val);
 								volume = Float.parseFloat(val.replaceAll(",", ""));
-							} else {
+							} else if (val1 != null && val1.trim().length() > 0) {
 								volume = Float.parseFloat(val1);
 							}
 
 						} catch (Exception ex) {
-
+							ex.printStackTrace(System.out);
 						}
 
 						// insert records;
 						try {
-							System.out.println(symbol + ": " + percentage + ": " + close + ": " + netChange + ": " + atr
-									+ ": " + open + ": " + high + ": " + low + ": " + low52 + ": " + high52 + ": "
-									+ marketCap + ": " + volume);
+							// System.out.println(symbol + ": " + percentage + ": " + close + ": " +
+							// netChange + ": " + atr
+							// + ": " + open + ": " + high + ": " + low + ": " + low52 + ": " + high52 + ":
+							// "
+							// + marketCap + ": " + volume);
 							rockStmnt.setInt(1, stockID);
 							rockStmnt.setInt(2, currentDateID);
 							rockStmnt.setFloat(3, percentage);
@@ -358,19 +358,19 @@ public class CSVReader {
 								rockStmnt.setInt(16, 0);
 							}
 
-							rockStmnt.setInt(17, 0);
-							rockStmnt.setInt(18, 0);
-							rockStmnt.setInt(19, 0);
-							rockStmnt.setInt(20, 0);
-
 							rockStmnt.execute();
 						} catch (Exception ex) {
-
+							ex.printStackTrace(System.out);
 						}
 						// insert records;
+
 					}
 				}
 
+				// kick start parsing after this
+				if (line.indexOf("Last") > 0) {
+					start = true;
+				}
 			}
 
 		} catch (FileNotFoundException e) {
