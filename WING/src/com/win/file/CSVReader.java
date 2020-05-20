@@ -224,14 +224,18 @@ public class CSVReader {
 					if (recordExists) {
 						// update record only
 						String fieldName = "TEAL";
-						if (fileName.toLowerCase().indexOf("struggle") > 0) {
+						if (fileName.toLowerCase().indexOf("struggle") >= 0) {
 							fieldName = "YELLOW";
-						} else if (fileName.toLowerCase().indexOf("up") > 0) {
+						} else if (fileName.toLowerCase().indexOf("up") >=0) {
 							fieldName = "TEAL";
-						} else if (fileName.toLowerCase().indexOf("down") > 0) {
+						} else if (fileName.toLowerCase().indexOf("down") >=0) {
 							fieldName = "PINK";
 						} 
-						updateBBRecord(stockID,currentDateID,fieldName,1);
+						
+						if (fileName.toLowerCase().indexOf("base")< 0) {
+							updateBBRecord(stockID,currentDateID,fieldName,1);
+						} 
+						
 
 					} else {
 						float percentage = 0.0f;
