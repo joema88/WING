@@ -4,6 +4,7 @@ import com.win.file.CSVReader;
 import com.win.db.*;
 import java.io.File;
 import java.io.FilenameFilter;
+import com.win.score.*;
 
 public class DailyRecordsUploader {
 
@@ -11,8 +12,10 @@ public class DailyRecordsUploader {
 		// TODO Auto-generated method stub
 		String path = "/home/joma/share/test/";
 		boolean currentDateProcessOnly = true;
-		String cDate = "2020-05-19";
+		String cDate = "2020-05-20";
 		readLoadRecords(path, currentDateProcessOnly, cDate);
+		DailyIncrease.processStocksYTP(cDate);
+		DBScore.cleanDB();
 		DB.closeConnection();
 
 	}
@@ -24,7 +27,7 @@ public class DailyRecordsUploader {
 
 		FilenameFilter txtFileFilter = new FilenameFilter() {
 			// @Override
-		    public boolean accept(File dir, String name) {
+			public boolean accept(File dir, String name) {
 				if (name.endsWith(".csv")) {
 					return true;
 
@@ -37,14 +40,14 @@ public class DailyRecordsUploader {
 		// Passing txtFileFilter to listFiles() method to retrieve only txt files
 
 		File[] files = folder.listFiles(txtFileFilter);
-		
+
 		for (int k = 0; k < files.length; k++) {
 			String nextFile = files[k].getName();
 			if (cdOnly && nextFile.indexOf(cDate) >= 0) {
-				System.out.println("Processing 1..."+nextFile);
+				System.out.println("Processing 1..." + nextFile);
 				CSVReader.uploadCSVtoDB(path, nextFile);
-			}else if(!cdOnly) {
-				System.out.println("Processing 2..."+nextFile);
+			} else if (!cdOnly) {
+				System.out.println("Processing 2..." + nextFile);
 				CSVReader.uploadCSVtoDB(path, nextFile);
 			}
 		}

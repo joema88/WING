@@ -293,26 +293,48 @@ public class CSVReader {
 
 						}
 						// 119.88,"53,714 M","1,003,250"
+						// 714 M,"1,003,250"
 						float marketCap = 0.0f;
 						try {
-							String val = line.substring(line.indexOf(data[9]) + data[9].length() + 2,
-									line.indexOf(" M"));
-							// System.out.println(symbol+ " data[10] "+val);
+							if (line.indexOf(" M\",") > 0) {
+								String val = line.substring(line.indexOf(data[9]) + data[9].length() + 2,
+										line.indexOf(" M\","));
+								// System.out.println(symbol+ " data[10] "+val);
 
-							marketCap = Float.parseFloat(val.replaceAll(",", ""));
+								marketCap = Float.parseFloat(val.replaceAll(",", ""));
+							} else if (line.indexOf(" M,") > 0) {
+								String val = line.substring(line.indexOf(data[9]) + data[9].length() + 1,
+										line.indexOf(" M,"));
+								// System.out.println(symbol+ " data[10] "+val);
+
+								marketCap = Float.parseFloat(val.replaceAll(",", ""));
+
+							}
 						} catch (Exception ex) {
 
 						}
 						float volume = 0.0f;
 						try {
-							String val1 = line.substring(line.indexOf(" M") + 4);
-							// System.out.println("val1 "+val1);
-							if (val1.indexOf("\"") >= 0) {
-								String val = line.substring(line.indexOf(" M") + 5, line.length() - 1);
-								// System.out.println("vale "+val);
-								volume = Float.parseFloat(val.replaceAll(",", ""));
-							} else if (val1 != null && val1.trim().length() > 0) {
-								volume = Float.parseFloat(val1);
+							if (line.indexOf(" M\",") > 0) {
+								String val1 = line.substring(line.indexOf(" M\",") + 4);
+								// System.out.println("val1 "+val1);
+								if (val1.indexOf("\"") >= 0) {
+									String val = line.substring(line.indexOf(" M") + 5, line.length() - 1);
+									// System.out.println("vale "+val);
+									volume = Float.parseFloat(val.replaceAll(",", ""));
+								} else if (val1 != null && val1.trim().length() > 0) {
+									volume = Float.parseFloat(val1);
+								}
+							} else if (line.indexOf(" M,") > 0) {
+								String val1 = line.substring(line.indexOf(" M") + 3);
+								// System.out.println("val1 "+val1);
+								if (val1.indexOf("\"") >= 0) {
+									String val = line.substring(line.indexOf(" M") + 4, line.length() - 1);
+									// System.out.println("vale "+val);
+									volume = Float.parseFloat(val.replaceAll(",", ""));
+								} else if (val1 != null && val1.trim().length() > 0) {
+									volume = Float.parseFloat(val1);
+								}
 							}
 
 						} catch (Exception ex) {
