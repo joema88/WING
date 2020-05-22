@@ -28,15 +28,24 @@ public class DB {
 		try {
 			if (stmnt != null) {
 				stmnt.close();
+				stmnt = null;
 			}
 			if (symbolStmnt != null) {
 				symbolStmnt.close();
+				symbolStmnt = null;
 			}
 			if (dateStmnt != null) {
 				dateStmnt.close();
+				dateStmnt = null;
 			}
 			if (rockStmnt != null) {
 				rockStmnt.close();
+				rockStmnt = null;
+			}
+			
+			if(dbcon!=null) {
+				dbcon.close();
+				dbcon = null;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -278,7 +287,10 @@ public class DB {
 		 * (DATEID)); 
 		 * 3. CREATE TABLE BBROCK(STOCKID SMALLINT, DATEID SMALLINT, PERCENT FLOAT, CLOSE FLOAT,NETCHANGE FLOAT, ATR FLOAT, OPEN FLOAT,HIGH FLOAT, LOW FLOAT,LOW52 FLOAT,HIGH52 FLOAT, MARKCAP FLOAT,VOLUME INT, YELLOW TINYINT DEFAULT 0,TEAL TINYINT DEFAULT 0, PINK TINYINT DEFAULT 0, BYC SMALLINT DEFAULT 0, BTC SMALLINT DEFAULT 0, BPC SMALLINT DEFAULT 0, BYS SMALLINT DEFAULT 0,BTS SMALLINT DEFAULT 0, BPS SMALLINT DEFAULT 0,BBS SMALLINT DEFAULT 0,BT9 SMALLINT DEFAULT 0, PTVAL FLOAT DEFAULT 0.0, PTCP FLOAT DEFAULT 0.0, PRIMARY KEY (STOCKID, DATEID), FOREIGN KEY (STOCKID) REFERENCES SYMBOLS(STOCKID) ON DELETE CASCADE, FOREIGN KEY (DATEID) REFERENCES DATES(DATEID));
 		 * */
-		//select a.DATEID,CDATE, a.STOCKID, CLOSE, TEAL, YELLOW, PINK, BTC,BYC,BPC,BTS,BYS,BPS, MARKCAP, VOLUME FROM BBROCK a, SYMBOLS b, DATES c  WHERE a.STOCKID = b.STOCKID and a.DATEID=c.DATEID and b.SYMBOL='LYG';$$$$$$$$$ SQL
+		//select a.DATEID,CDATE, a.STOCKID, CLOSE, TEAL, YELLOW, PINK, BTC,BYC,BPC,BTS,BYS,BPS,BBS,PTVAL, PTCP,BT9, MARKCAP, VOLUME FROM BBROCK a, SYMBOLS b, DATES c  WHERE a.STOCKID = b.STOCKID and a.DATEID=c.DATEID and b.SYMBOL='LYG';
+		
+		
+		//$$$$$$$$$ SQL
 
 		// auto close connection
 		try {
