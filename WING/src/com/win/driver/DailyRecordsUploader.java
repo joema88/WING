@@ -14,9 +14,9 @@ public class DailyRecordsUploader {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		String path = "/home/joma/share/test/";
-		boolean currentDateProcessOnly = true;
-		String cDate = "2020-05-22";
-		int dateCountToBeProcessed = 3;
+		boolean currentDateProcessOnly = false;
+		String cDate = "2020-05-19";
+		int dateCountToBeProcessed = 4;
 		int loopCount = 0;
 		long t1 = System.currentTimeMillis();
 

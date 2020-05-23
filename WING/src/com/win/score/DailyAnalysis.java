@@ -97,11 +97,11 @@ public class DailyAnalysis {
 	}
 
 	public static void checkTrend(int stockID, int dateID) {
-		if(stockID==6551) {
-			int a =0;
-			a= a*3;
+		if (stockID == 6551) {
+			int a = 0;
+			a = a * 3;
 		}
-			// check previous BBS to set stage
+		// check previous BBS to set stage
 		int[][] previousBBS = getPreviousRecords(DBAnalysis.getBbsQueryStmnt(), stockID);
 
 		// check BYC, BTC, BPC
@@ -164,11 +164,11 @@ public class DailyAnalysis {
 
 						if (c1 && c2) { // let's compare!
 							if (cprice > 0.01f && pprice > 0.01f) {
-								if (patr>0.01f && cprice >= (pprice +3 * patr)) { // very bull case 3xxxx
+								if (patr > 0.01f && cprice >= (pprice + 3 * patr)) { // very bull case 3xxxx
 									bullscore = 30000;
-								}else if (patr>0.01f && cprice >= (pprice +2 * patr)) { // very bull case 3xxxx
+								} else if (patr > 0.01f && cprice >= (pprice + 2 * patr)) { // very bull case 3xxxx
 									bullscore = 20000;
-								}else if (patr>0.01f && cprice >= (pprice +1 * patr)) { // very bull case 3xxxx
+								} else if (patr > 0.01f && cprice >= (pprice + 1 * patr)) { // very bull case 3xxxx
 									bullscore = 10000;
 								}
 							}
@@ -178,13 +178,14 @@ public class DailyAnalysis {
 				}
 
 				// one update at the end
-				if (eprice > 0.01f && pprice > 0.01f ) {
+				if (eprice > 0.01f && pprice > 0.01f) {
 					System.out.println("Compare stockID " + stockID + " edate " + edate + " eprice " + eprice + " pdate"
 							+ pdate + " pprice " + pprice + " patr " + patr);
 
 					int days = edate - pdate + 1;
-					//System.out.println("30000 + days " + ( bullscore + days));
-					updateRecord(DBAnalysis.getBbsUpdateStmnt(), stockID, edate,  bullscore + days);
+					// System.out.println("30000 + days " + ( bullscore + days));
+					updateRecord(DBAnalysis.getBbsUpdateStmnt(), stockID, edate, bullscore + days);
+					updateYTPSummary(stockID,pdate,edate);
 				}
 
 			}
@@ -215,18 +216,42 @@ public class DailyAnalysis {
 
 	}
 
-	public static void updateYTPSummary(int stockID, int dateID, int bys, int bts, int bps) {
+	public static void updateYTPSummary(int stockID, int dateStart, int dateEnd) {
 		try {
-			PreparedStatement stmnt = null;// DBAnalysis.getbytpSummaryPreparedStatement();
-			stmnt.setInt(1, bys);
-			stmnt.setInt(2, bts);
-			stmnt.setInt(3, bps);
-			stmnt.setInt(4, stockID);
-			stmnt.setInt(5, dateID);
-			stmnt.executeUpdate();
-			if (bys >= 1 || bts >= 1 || bps >= 1) {
-				System.out.println(stockID + ":" + dateID + ":" + bys + ":" + bts + ":" + bps);
-			}
+			PreparedStatement stmnt1 = DBAnalysis.getTealSumStmnt();
+			stmnt1.setInt(1, stockID);
+			stmnt1.setInt(2, dateStart);
+			stmnt1.setInt(3, dateEnd);
+			ResultSet rs1 = stmnt1.executeQuery();
+			int tsc = 0;
+			if (rs1.next())
+				tsc = rs1.getInt(1);
+
+			PreparedStatement stmnt2 = DBAnalysis.getPinkSumStmnt();
+			stmnt2.setInt(1, stockID);
+			stmnt2.setInt(2, dateStart);
+			stmnt2.setInt(3, dateEnd);
+			ResultSet rs2 = stmnt2.executeQuery();
+			int tpc = 0;
+			if (rs2.next())
+				tpc = rs2.getInt(1);
+
+			PreparedStatement stmnt3 = DBAnalysis.getYellowSumStmnt();
+			stmnt3.setInt(1, stockID);
+			stmnt3.setInt(2, dateStart);
+			stmnt3.setInt(3, dateEnd);
+			ResultSet rs3 = stmnt3.executeQuery();
+			int tyc = 0;
+			if (rs3.next())
+				tyc = rs3.getInt(1);
+
+			PreparedStatement stmnt4 = DBAnalysis.getTYCSUpdateStmnt();
+			stmnt4.setInt(1, tsc);
+			stmnt4.setInt(2, tyc);
+			stmnt4.setInt(3, tpc);
+			stmnt4.setInt(4, stockID);
+			stmnt4.setInt(5, dateEnd);
+			stmnt4.executeUpdate();
 		} catch (Exception ex) {
 			ex.printStackTrace(System.out);
 		}

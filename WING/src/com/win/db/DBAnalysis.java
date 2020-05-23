@@ -10,8 +10,10 @@ public class DBAnalysis extends DB {
 	private static PreparedStatement bpcQueryStmnt = null;
 	private static PreparedStatement bbsQueryStmnt = null;
 	private static PreparedStatement bbsUpdateStmnt = null;
-	private static PreparedStatement btcSumStmnt = null;
-	private static PreparedStatement btsUpdateStmnt = null;
+	private static PreparedStatement tealSumStmnt = null;
+	private static PreparedStatement yellowSumStmnt = null;
+	private static PreparedStatement pinkSumStmnt = null;
+	private static PreparedStatement tycsUpdateStmnt = null;
 	public static short records = 4;
 
 	public static void cleanDB() {
@@ -33,13 +35,21 @@ public class DBAnalysis extends DB {
 				bycQueryStmnt = null;
 			}
 
-			if (btcSumStmnt != null) {
-				btcSumStmnt.close();
-				btcSumStmnt = null;
-			}
-			if (btsUpdateStmnt != null) {
-				btsUpdateStmnt.close();
-				btsUpdateStmnt = null;
+			if (tealSumStmnt != null) {
+				tealSumStmnt.close();
+				tealSumStmnt = null;
+			} 
+			if (yellowSumStmnt != null) {
+				yellowSumStmnt.close();
+				yellowSumStmnt = null;
+			} 
+			if (pinkSumStmnt != null) {
+				pinkSumStmnt.close();
+				pinkSumStmnt = null;
+			} 
+			if (tycsUpdateStmnt != null) {
+				tycsUpdateStmnt.close();
+				tycsUpdateStmnt = null;
 			}
 
 			if (bbsQueryStmnt != null) {
@@ -72,35 +82,66 @@ public class DBAnalysis extends DB {
 
 	}
 
-	public static PreparedStatement getBTCSumStmnt() {
+	public static PreparedStatement getTealSumStmnt() {
 		// getConnection();
 
-		if (btcSumStmnt == null) {
+		if (tealSumStmnt == null) {
 			try {
-				String query = "SELECT COUNT(*) FROM BBROCK WHERE STOCKID =? AND DATEID >=? AND DATEID <= ?";
-				btcSumStmnt = DB.getConnection().prepareStatement(query);
+				String query = "SELECT COUNT(*) FROM BBROCK WHERE TEAL=1 AND STOCKID =? AND DATEID >=? AND DATEID <= ?";
+				tealSumStmnt = DB.getConnection().prepareStatement(query);
 			} catch (SQLException e) {
 				e.printStackTrace(System.out);
 			}
 		}
 
-		return btcSumStmnt;
+		return tealSumStmnt;
 
 	}
 
-	public static PreparedStatement getBTSUpdateStmnt() {
-		// getConnection();
-
-		if (btsUpdateStmnt == null) {
+	public static PreparedStatement getYellowSumStmnt() {
+		
+		if (yellowSumStmnt == null) {
 			try {
-				String query = "UPDATE BBROCK SET BTS = ?  WHERE STOCKID =?  AND  DATEID =?";
-				btsUpdateStmnt = DB.getConnection().prepareStatement(query);
+				String query = "SELECT COUNT(*) FROM BBROCK WHERE YELLOW=1 AND STOCKID =? AND DATEID >=? AND DATEID <= ?";
+				yellowSumStmnt = DB.getConnection().prepareStatement(query);
 			} catch (SQLException e) {
 				e.printStackTrace(System.out);
 			}
 		}
 
-		return btsUpdateStmnt;
+		return yellowSumStmnt;
+
+	}
+	
+	public static PreparedStatement getPinkSumStmnt() {
+		
+		if (pinkSumStmnt == null) {
+			try {
+				String query = "SELECT COUNT(*) FROM BBROCK WHERE PINK=1 AND STOCKID =? AND DATEID >=? AND DATEID <= ?";
+				pinkSumStmnt = DB.getConnection().prepareStatement(query);
+			} catch (SQLException e) {
+				e.printStackTrace(System.out);
+			}
+		}
+
+		return pinkSumStmnt;
+
+	}
+	
+	
+	public static PreparedStatement getTYCSUpdateStmnt() {
+		// getConnection();
+
+		if (tycsUpdateStmnt == null) {
+			try {
+				String query = "UPDATE BBROCK SET BTS = ?, BYS = ?, BPS = ?  WHERE STOCKID =?  AND  DATEID =?";
+				tycsUpdateStmnt = DB.getConnection().prepareStatement(query);
+			} catch (SQLException e) {
+				e.printStackTrace(System.out);
+			}
+		}
+
+		return tycsUpdateStmnt;
 
 	}
 
