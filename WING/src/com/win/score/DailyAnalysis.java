@@ -105,7 +105,7 @@ public class DailyAnalysis {
 		int[][] previousBBS = getPreviousRecords(DBAnalysis.getBbsQueryStmnt(), stockID);
 
 		// check BYC, BTC, BPC
-		//if (previousBBS[0][0] == 0) // new case, no BBS set yet ever
+		if (previousBBS[0][0] == 0) // new case, no BBS set yet ever
 		{
 			int[][] previousBTC = getPreviousRecords(DBAnalysis.getBtcQueryStmnt(), stockID);
 			int[][] previousBYC = getPreviousRecords(DBAnalysis.getBycQueryStmnt(), stockID);
@@ -197,10 +197,11 @@ public class DailyAnalysis {
 		}else if(bycStart>0 && bpcStart==0) {
 			pyStart = bycStart;
 		}else if(bpcStart> bycStart) {
-			pyStart = bpcStart;
-		}else {
 			pyStart = bycStart;
+		}else {
+			pyStart = bpcStart;
 		}
+		
 		// yellow/pink wraps around teal case
 		if ((bpcMax >= btcMax || bycMax>= btcMax)&&(bpcEnd >= btcEnd || bycEnd >= btcEnd)&&(pyStart <= btcStart)) {
 			for (int k = 0; k < records; k++) {
