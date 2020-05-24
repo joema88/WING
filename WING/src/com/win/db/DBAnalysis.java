@@ -9,7 +9,7 @@ public class DBAnalysis extends DB {
 	private static PreparedStatement bycQueryStmnt = null;
 	private static PreparedStatement bpcQueryStmnt = null;
 	private static PreparedStatement bbsQueryStmnt = null;
-	private static PreparedStatement bbsUpdateStmnt = null;
+	private static PreparedStatement bbsPricePTUpdateStmnt = null;
 	private static PreparedStatement tealSumStmnt = null;
 	private static PreparedStatement yellowSumStmnt = null;
 	private static PreparedStatement pinkSumStmnt = null;
@@ -57,9 +57,9 @@ public class DBAnalysis extends DB {
 				bbsQueryStmnt.close();
 				bbsQueryStmnt = null;
 			}
-			if (bbsUpdateStmnt != null) {
-				bbsUpdateStmnt.close();
-				bbsUpdateStmnt = null;
+			if (bbsPricePTUpdateStmnt != null) {
+				bbsPricePTUpdateStmnt.close();
+				bbsPricePTUpdateStmnt = null;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -209,20 +209,20 @@ public class DBAnalysis extends DB {
 
 	}
 
-	public static PreparedStatement getBbsUpdateStmnt() {
+	public static PreparedStatement getBbsPricePTUpdateStmnt() {
 		// getConnection();
 
-		if (bbsUpdateStmnt == null) {
+		if (bbsPricePTUpdateStmnt == null) {
 			try {
-				String query = "UPDATE BBROCK SET BBS = ? WHERE STOCKID =? AND DATEID =? ";
+				String query = "UPDATE BBROCK SET BBS = ?, PTVAL=? WHERE STOCKID =? AND DATEID =? ";
 
-				bbsUpdateStmnt = DB.getConnection().prepareStatement(query);
+				bbsPricePTUpdateStmnt = DB.getConnection().prepareStatement(query);
 			} catch (SQLException e) {
 				e.printStackTrace(System.out);
 			}
 		}
 
-		return bbsUpdateStmnt;
+		return bbsPricePTUpdateStmnt;
 
 	}
 

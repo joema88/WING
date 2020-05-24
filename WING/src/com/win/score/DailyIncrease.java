@@ -139,11 +139,11 @@ public class DailyIncrease {
 					}
 
 					// update previous day YTP count
-					updateYTPCount(stockID, dateID - 1, oldyc, oldtc, oldpc);
+					updateYTPCount(stockID, dateID - 1, oldyc, oldtc, oldpc, btc2);
 					// update current day YTP count
-					updateYTPCount(stockID, dateID, newyc, newtc, newpc);
-					// update current day T9 count
-					processBT9(stockID, dateID);
+					updateYTPCount(stockID, dateID, newyc, newtc, newpc,newtc);
+					// update current day T9 count, may no longer be needed as it is combined with previous step
+					//processBT9(stockID, dateID);
 				}
 
 				if (loopCount >= 2)
@@ -152,7 +152,7 @@ public class DailyIncrease {
 
 			// we only have first record date
 			if (loopCount == 1) {
-				updateYTPCount(stockID, dateID, yellow1, teal1, pink1);
+				updateYTPCount(stockID, dateID, yellow1, teal1, pink1, teal1);
 				// updateYTPSummary(stockID, dateID, yellow1, teal1, pink1);
 			}
 
@@ -162,56 +162,18 @@ public class DailyIncrease {
 
 	}
 
-	public static void processBT9(int stockID, int dateID) {
-		try {
-			PreparedStatement stmnt1 = DBScore.getBT9FindPreparedStatement();
-			stmnt1.setInt(1, stockID);
-			ResultSet rs1 = stmnt1.executeQuery();
-			int btCount = 0;
-			while (rs1.next()) { //loop through past 9 records
-				btCount = btCount + rs1.getInt(1);
-			}
 
-			if (btCount == 9) { //only need to update if is 9
-				PreparedStatement stmnt2 = DBScore.getBT9QueryPreparedStatement();
-				stmnt2.setInt(1, stockID);
-				stmnt2.setInt(2, dateID);
-				ResultSet rs2 = stmnt1.executeQuery();
-				int bt9 = 0;
-			
-				if (rs2.next()&&rs2.next()) { //need previous day record
-					bt9 = rs2.getInt(1);
-					updateBT9(stockID, dateID, bt9 + 1);
-				}
 
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace(System.out);
-		}
-
-	}
-
-	public static void updateBT9(int stockID, int dateID, int bt9) {
-		try {
-			PreparedStatement stmnt = DBScore.getBT9UpdatePreparedStatement();
-			stmnt.setInt(1, bt9);
-			stmnt.setInt(2, stockID);
-			stmnt.setInt(3, dateID);
-			stmnt.executeUpdate();
-		} catch (Exception ex) {
-			ex.printStackTrace(System.out);
-		}
-
-	}
-
-	public static void updateYTPCount(int stockID, int dateID, int byc, int btc, int bpc) {
+	
+	public static void updateYTPCount(int stockID, int dateID, int byc, int btc, int bpc, int bt9) {
 		try {
 			PreparedStatement stmnt = DBScore.getbytpCountUpdatePreparedStatement();
 			stmnt.setInt(1, byc);
 			stmnt.setInt(2, btc);
 			stmnt.setInt(3, bpc);
-			stmnt.setInt(4, stockID);
-			stmnt.setInt(5, dateID);
+			stmnt.setInt(4, bt9);
+			stmnt.setInt(5, stockID);
+			stmnt.setInt(6, dateID);
 			stmnt.executeUpdate();
 			if (byc >= 1 || btc >= 1 || bpc >= 1) {
 				// System.out.println(stockID + ":" + dateID + ":" + byc + ":" + btc + ":" +

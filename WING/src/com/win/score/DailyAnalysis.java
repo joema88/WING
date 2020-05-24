@@ -41,11 +41,12 @@ public class DailyAnalysis {
 
 	}
 
-	public static void updateRecord(PreparedStatement stmnt, int stockID, int dateID, int bbs) {
+	public static void updateRecord(PreparedStatement stmnt, int stockID, int dateID, int bbs, float price) {
 		try {
 			stmnt.setInt(1, bbs);
-			stmnt.setInt(2, stockID);
-			stmnt.setInt(3, dateID);
+			stmnt.setFloat(2, price);
+			stmnt.setInt(3, stockID);
+			stmnt.setInt(4, dateID);
 			stmnt.executeUpdate();
 		} catch (Exception ex) {
 			ex.printStackTrace(System.out);
@@ -96,7 +97,8 @@ public class DailyAnalysis {
 	}
 
 	public static void checkTrend(int stockID, int dateID) {
-		if (stockID == 1688) {
+		if (stockID == 1289) {
+			//1688
 			int a = 0;
 			a = a * 3;
 		}
@@ -104,7 +106,7 @@ public class DailyAnalysis {
 		int[][] previousBBS = getPreviousRecords(DBAnalysis.getBbsQueryStmnt(), stockID);
 
 		// check BYC, BTC, BPC
-		if (previousBBS[0][0] == 0) // new case, no BBS set yet ever
+		//if (previousBBS[0][0] == 0) // new case, no BBS set yet ever
 		{
 			int[][] previousBTC = getPreviousRecords(DBAnalysis.getBtcQueryStmnt(), stockID);
 			int[][] previousBYC = getPreviousRecords(DBAnalysis.getBycQueryStmnt(), stockID);
@@ -224,7 +226,7 @@ public class DailyAnalysis {
 				endPY = bycEnd;
 			}
 
-			if (bpcStart <= bycStart) {
+			if (bpcStart>0 && bpcStart <= bycStart) {
 				beginPY = bpcStart;
 			} else {
 				beginPY = bycStart;
@@ -345,7 +347,14 @@ public class DailyAnalysis {
 
 			int days = edate - pdate + 1;
 			// System.out.println("30000 + days " + ( bullscore + days));
-			updateRecord(DBAnalysis.getBbsUpdateStmnt(), stockID, edate, bullscore - days);
+			//update end tag with price,the price may need to be optimize in the future to get peak/trough around this position
+			updateRecord(DBAnalysis.getBbsPricePTUpdateStmnt(), stockID, edate, bullscore - days, eprice);
+			int startVal = -1;
+			if((bullscore - days)>0) {
+				startVal = 1;
+			}
+			//update start tag with price, the price may need to be optimize in the future to get peak/trough around this position
+			updateRecord(DBAnalysis.getBbsPricePTUpdateStmnt(), stockID, pdate, startVal, pprice);
 			updateYTPSummary(stockID, pdate, edate);
 		}
 
@@ -435,7 +444,17 @@ public class DailyAnalysis {
 
 			int days = edate - pdate + 1;
 			// System.out.println("30000 + days " + ( bullscore + days));
-			updateRecord(DBAnalysis.getBbsUpdateStmnt(), stockID, edate, bullscore + days);
+			
+			//update end tag with price,the price may need to be optimize in the future to get peak/trough around this position
+			updateRecord(DBAnalysis.getBbsPricePTUpdateStmnt(), stockID, edate, bullscore + days, eprice);
+			
+			int startVal = -1;
+			if((bullscore - days)>0) {
+				startVal = 1;
+			}
+			//update start tag with price, the price may need to be optimize in the future to get peak/trough around this position
+			updateRecord(DBAnalysis.getBbsPricePTUpdateStmnt(), stockID, pdate, startVal, pprice);
+			
 			updateYTPSummary(stockID, pdate, edate);
 		}
 

@@ -98,46 +98,14 @@ public class DBScore extends DB {
 
 	}
 	
-	public static PreparedStatement getBT9FindPreparedStatement() {
-		// getConnection();
-
-		if (BT9FindStmnt  == null) {
-			try {
-				String query = "SELECT TEAL FROM BBROCK WHERE STOCKID=? ORDER BY DATEID DESC LIMIT 9";
-
-				BT9FindStmnt  = DB.getConnection().prepareStatement(query);
-			} catch (SQLException e) {
-				e.printStackTrace(System.out);
-			}
-		}
-
-		return BT9FindStmnt ;
-
-	}
 	
-	public static PreparedStatement getBT9UpdatePreparedStatement() {
-		// getConnection();
-
-		if (BT9UpdateStmnt == null) {
-			try {
-				String query = "UPDATE BBROCK SET BT9 = ? WHERE STOCKID=? AND DATEID = ?";
-
-				BT9UpdateStmnt = DB.getConnection().prepareStatement(query);
-			} catch (SQLException e) {
-				e.printStackTrace(System.out);
-			}
-		}
-
-		return BT9UpdateStmnt;
-
-	}
-
+	
 	public static PreparedStatement getbytpCountUpdatePreparedStatement() {
 		// getConnection();
 
 		if (bytpCountUpdateStmnt == null) {
 			try {
-				String query = "UPDATE BBROCK SET BYC = ?, BTC = ?, BPC = ? WHERE STOCKID=? AND DATEID = ?";
+				String query = "UPDATE BBROCK SET BYC = ?, BTC = ?, BPC = ?, BT9 = ? WHERE STOCKID=? AND DATEID = ?";
 
 				bytpCountUpdateStmnt = DB.getConnection().prepareStatement(query);
 			} catch (SQLException e) {

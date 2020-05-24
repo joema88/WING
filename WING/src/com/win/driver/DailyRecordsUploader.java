@@ -35,7 +35,7 @@ public class DailyRecordsUploader {
 		} while (!currentDateProcessOnly && loopCount <= dateCountToBeProcessed);
 		
 		
-		DailyAnalysis.analyzeStockTrend("2020-05-22");
+		//DailyAnalysis.analyzeStockTrend("2020-05-22");
 		long t2 = System.currentTimeMillis();
 		
 		System.out.println("Total time cost is minutes: "+(t2-t1)/1000.0f/60.0f);
