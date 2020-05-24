@@ -34,6 +34,7 @@ public class DailyRecordsUploader {
 			loopCount++;
 		} while (!currentDateProcessOnly && loopCount <= dateCountToBeProcessed);
 		
+		
 		DailyAnalysis.analyzeStockTrend("2020-05-22");
 		long t2 = System.currentTimeMillis();
 		

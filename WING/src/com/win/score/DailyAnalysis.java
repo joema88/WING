@@ -19,7 +19,6 @@ public class DailyAnalysis {
 
 	public static void analyzeStockTrend(String dateStr) {
 		try {
-			// String dateStr = "2020-05-20";
 			int dateID = 4;
 			dateID = DB.getDateID(dateStr);
 

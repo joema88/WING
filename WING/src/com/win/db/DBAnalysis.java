@@ -16,6 +16,7 @@ public class DBAnalysis extends DB {
 	private static PreparedStatement tycsUpdateStmnt = null;
 	public static short records = 4;
 
+	
 	public static void cleanDB() {
 		try {
 			if (priceATRStmnt != null) {
