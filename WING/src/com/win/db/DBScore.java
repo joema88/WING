@@ -45,6 +45,7 @@ public class DBScore extends DB {
 		}
 	}
 
+
 	
 	public static Statement getBytpStatement() {
 		
@@ -60,7 +61,7 @@ public class DBScore extends DB {
 	}
 	
 
-
+	
 
 
 	

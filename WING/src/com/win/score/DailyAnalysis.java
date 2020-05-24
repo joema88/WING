@@ -98,7 +98,7 @@ public class DailyAnalysis {
 
 	public static void checkTrend(int stockID, int dateID) {
 		if (stockID == 1289) {
-			//1688
+			// 1688
 			int a = 0;
 			a = a * 3;
 		}
@@ -106,14 +106,14 @@ public class DailyAnalysis {
 		int[][] previousBBS = getPreviousRecords(DBAnalysis.getBbsQueryStmnt(), stockID);
 
 		// check BYC, BTC, BPC
-		//if (previousBBS[0][0] == 0) // new case, no BBS set yet ever
+	   if (previousBBS[0][0] == 0) // new case, no BBS set yet ever
 		{
 			int[][] previousBTC = getPreviousRecords(DBAnalysis.getBtcQueryStmnt(), stockID);
 			int[][] previousBYC = getPreviousRecords(DBAnalysis.getBycQueryStmnt(), stockID);
 			int[][] previousBPC = getPreviousRecords(DBAnalysis.getBpcQueryStmnt(), stockID);
 			// case 1 all TEAL
 			if (previousBTC[0][0] > 0 && previousBYC[0][0] == 0 && previousBPC[0][0] == 0) {
-				allTealAnalysis(stockID, previousBTC, previousBYC, previousBPC,0);
+				allTealAnalysis(stockID, previousBTC, previousBYC, previousBPC, 0);
 			}
 
 			// case 2 all yellow, pink
@@ -122,7 +122,7 @@ public class DailyAnalysis {
 			}
 
 			// case 3 mixed teal/yellow|pink
-			if (previousBTC[0][0] > 0 && (previousBYC[0][0] > 0||previousBPC[0][0] > 0)) {
+			if (previousBTC[0][0] > 0 && (previousBYC[0][0] > 0 || previousBPC[0][0] > 0)) {
 				overlapAnalysis(stockID, previousBTC, previousBYC, previousBPC);
 			}
 			// case 4 no signal
@@ -193,18 +193,18 @@ public class DailyAnalysis {
 		}
 
 		int pyStart = 0;
-		if(bpcStart>0 && bycStart==0) {
+		if (bpcStart > 0 && bycStart == 0) {
 			pyStart = bpcStart;
-		}else if(bycStart>0 && bpcStart==0) {
+		} else if (bycStart > 0 && bpcStart == 0) {
 			pyStart = bycStart;
-		}else if(bpcStart> bycStart) {
+		} else if (bpcStart > bycStart) {
 			pyStart = bycStart;
-		}else {
+		} else {
 			pyStart = bpcStart;
 		}
-		
+
 		// yellow/pink wraps around teal case
-		if ((bpcMax >= btcMax || bycMax>= btcMax)&&(bpcEnd >= btcEnd || bycEnd >= btcEnd)&&(pyStart <= btcStart)) {
+		if ((bpcMax >= btcMax || bycMax >= btcMax) && (bpcEnd >= btcEnd || bycEnd >= btcEnd) && (pyStart <= btcStart)) {
 			for (int k = 0; k < records; k++) {
 				previousBTC[k][0] = 0;
 				previousBTC[k][1] = 0;
@@ -226,7 +226,7 @@ public class DailyAnalysis {
 				endPY = bycEnd;
 			}
 
-			if (bpcStart>0 && bpcStart <= bycStart) {
+			if (bpcStart > 0 && bpcStart <= bycStart) {
 				beginPY = bpcStart;
 			} else {
 				beginPY = bycStart;
@@ -246,7 +246,7 @@ public class DailyAnalysis {
 		}
 
 		// teal wraps around yellow/pink case //119, 4285
-		if ((bpcMax <= btcMax && bycMax<= btcMax) && (btcEnd >= bpcEnd && btcEnd >= bycEnd) && (btcStart <= pyStart)) {
+		if ((bpcMax <= btcMax && bycMax <= btcMax) && (btcEnd >= bpcEnd && btcEnd >= bycEnd) && (btcStart <= pyStart)) {
 			for (int k = 0; k < records; k++) {
 				previousBTC[k][0] = 0;
 				previousBTC[k][1] = 0;
@@ -265,15 +265,14 @@ public class DailyAnalysis {
 			allTealAnalysis(stockID, previousBTC, previousBYC, previousBPC, 1000);
 
 		}
-		
-		//yellow/pink --> teal case
-		//1688
-		
-		//teal --> yellow/pink case
+
+		// yellow/pink --> teal case
+		// 1688
+
+		// teal --> yellow/pink case
 
 	}
 
-	
 	public static void allYellowAnalysis(int stockID, int[][] previousBTC, int[][] previousBYC, int[][] previousBPC,
 			int bullScore) {
 		int edate = 0;
@@ -347,14 +346,18 @@ public class DailyAnalysis {
 
 			int days = edate - pdate + 1;
 			// System.out.println("30000 + days " + ( bullscore + days));
-			//update end tag with price,the price may need to be optimize in the future to get peak/trough around this position
+			// update end tag with price,the price may need to be optimize in the future to
+			// get peak/trough around this position
 			updateRecord(DBAnalysis.getBbsPricePTUpdateStmnt(), stockID, edate, bullscore - days, eprice);
 			int startVal = -1;
-			if((bullscore - days)>0) {
+			if ((bullscore - days) > 0) {
 				startVal = 1;
 			}
-			//update start tag with price, the price may need to be optimize in the future to get peak/trough around this position
+			// update start tag with price, the price may need to be optimize in the future
+			// to get peak/trough around this position
 			updateRecord(DBAnalysis.getBbsPricePTUpdateStmnt(), stockID, pdate, startVal, pprice);
+
+			updatePTCP(DBAnalysis.getPtpcUpdatePreparedStatement(), stockID, edate, eprice, pprice);
 			updateYTPSummary(stockID, pdate, edate);
 		}
 
@@ -444,18 +447,37 @@ public class DailyAnalysis {
 
 			int days = edate - pdate + 1;
 			// System.out.println("30000 + days " + ( bullscore + days));
-			
-			//update end tag with price,the price may need to be optimize in the future to get peak/trough around this position
+
+			// update end tag with price,the price may need to be optimize in the future to
+			// get peak/trough around this position
 			updateRecord(DBAnalysis.getBbsPricePTUpdateStmnt(), stockID, edate, bullscore + days, eprice);
-			
+
 			int startVal = -1;
-			if((bullscore - days)>0) {
+			if ((bullscore - days) > 0) {
 				startVal = 1;
 			}
-			//update start tag with price, the price may need to be optimize in the future to get peak/trough around this position
+			// update start tag with price, the price may need to be optimize in the future
+			// to get peak/trough around this position
 			updateRecord(DBAnalysis.getBbsPricePTUpdateStmnt(), stockID, pdate, startVal, pprice);
+
+			updatePTCP(DBAnalysis.getPtpcUpdatePreparedStatement(), stockID, edate, eprice, pprice);
 			
 			updateYTPSummary(stockID, pdate, edate);
+		}
+
+	}
+
+	public static void updatePTCP(PreparedStatement stmnt, int stockID, int edate, float eprice, float pprice) {
+
+		try {
+			float percentage = 100.0f * (eprice - pprice) / pprice;
+			stmnt.setFloat(1, percentage);
+			stmnt.setInt(2, stockID);
+			stmnt.setInt(3, edate);
+			stmnt.executeUpdate();
+
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
 		}
 
 	}

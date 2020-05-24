@@ -14,11 +14,17 @@ public class DBAnalysis extends DB {
 	private static PreparedStatement yellowSumStmnt = null;
 	private static PreparedStatement pinkSumStmnt = null;
 	private static PreparedStatement tycsUpdateStmnt = null;
+	private static PreparedStatement ptpcUpdateStmnt = null;
+	
 	public static short records = 4;
 
 	
 	public static void cleanDB() {
 		try {
+			if(ptpcUpdateStmnt !=null) {
+				ptpcUpdateStmnt.close();
+				ptpcUpdateStmnt = null;
+			}
 			if (priceATRStmnt != null) {
 				priceATRStmnt.close();
 				priceATRStmnt = null;
@@ -113,6 +119,25 @@ public class DBAnalysis extends DB {
 		return yellowSumStmnt;
 
 	}
+	
+	//ptpcUpdateStmnt
+	
+		public static PreparedStatement getPtpcUpdatePreparedStatement() {
+			// getConnection();
+
+			if (ptpcUpdateStmnt == null) {
+				try {
+					String query = "UPDATE BBROCK SET PTCP = ? WHERE STOCKID=? AND DATEID = ?";
+
+					ptpcUpdateStmnt = DB.getConnection().prepareStatement(query);
+				} catch (SQLException e) {
+					e.printStackTrace(System.out);
+				}
+			}
+
+			return ptpcUpdateStmnt;
+
+		}
 	
 	public static PreparedStatement getPinkSumStmnt() {
 		
